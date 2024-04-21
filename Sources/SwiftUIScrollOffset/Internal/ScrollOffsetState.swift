@@ -5,10 +5,13 @@
 */
 
 import Combine
+import Observation
 import SwiftUI
 
-internal final class ScrollOffsetState: ObservableObject {
-    @Published private(set) var value = CGFloat.zero
+@Observable
+@available(iOS 17, *)
+internal final class ScrollOffsetState {
+    private(set) var value = CGFloat.zero
     
     func update(edge: Edge, id: AnyHashable?, range: ClosedRange<CGFloat>) {
         self.edge = edge

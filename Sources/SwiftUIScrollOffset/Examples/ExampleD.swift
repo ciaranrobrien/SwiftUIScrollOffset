@@ -7,6 +7,7 @@
 import SwiftUI
 
 /// Use `ScrollOffsetProxy` to programmatically scroll to an offset without reading the current value.
+@available(iOS 17, *)
 private struct ContentView: View {
     @ScrollOffsetProxy(.bottom, id: "Foo") private var scrollOffsetProxy
     

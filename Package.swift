@@ -11,7 +11,7 @@ import PackageDescription
 let package = Package(
     name: "SwiftUIScrollOffset",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v17),
         .visionOS(.v1)
     ],
     products: [

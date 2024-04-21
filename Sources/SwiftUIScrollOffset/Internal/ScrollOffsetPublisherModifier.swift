@@ -9,25 +9,26 @@ import SwiftUIIntrospect
 import UIKit
 
 @MainActor
+@available(iOS 17, *)
 internal struct ScrollOffsetPublisherModifier: ViewModifier {
-    @StateObject private var state = ScrollOffsetPublisherState()
+    @State private var state = ScrollOffsetPublisherState()
     
     var scrollOffsetID: ScrollOffsetID
     
     func body(content: Content) -> some View {
         content
             .introspect(.scrollView, on: .visionOS(.v1), customize: state.subscribe)
-            .introspect(.scrollView, on: .iOS(.v14, .v15, .v16, .v17), customize: state.subscribe)
+            .introspect(.scrollView, on: .iOS(.v17), customize: state.subscribe)
             .environment(\.scrollPublisherID, scrollOffsetID.id ?? state.scrollContainerID)
             .background(
                 GeometryReader { geometry in
                     Color.clear
                         .hidden()
-                        .onAppearAndChange(of: geometry.frame(in: .global)) { _ in
-                            state.update()
-                        }
+                        .onChange(of: geometry.frame(in: .global), initial: true, state.update)
                 }
             )
-            .onAppearAndChange(of: scrollOffsetID.id, state.onID)
+            .onChange(of: scrollOffsetID.id, initial: true) { _, newID in
+                state.onID(newID)
+            }
     }
 }

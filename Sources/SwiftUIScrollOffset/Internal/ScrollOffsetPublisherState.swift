@@ -5,13 +5,16 @@
 */
 
 import Combine
+import Observation
 import SwiftUI
 import UIKit
 
-internal final class ScrollOffsetPublisherState: NSObject, ObservableObject {
+@Observable
+@available(iOS 17, *)
+internal final class ScrollOffsetPublisherState: NSObject {
     private var contentOffsetCancellable: AnyCancellable?
     private var contentSizeCancellable: AnyCancellable?
-    private var id: AnyHashable?
+    @ObservationIgnored private var id: AnyHashable?
     private weak var scrollView: UIScrollView?
     
     var isPublishing: Bool {

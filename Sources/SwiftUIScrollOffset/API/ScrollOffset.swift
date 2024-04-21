@@ -6,9 +6,10 @@
 
 import SwiftUI
 
+@available(iOS 17, *)
 @propertyWrapper public struct ScrollOffset: DynamicProperty {
     @Environment(\.scrollPublisherID) private var scrollPublisherID
-    @StateObject private var state = ScrollOffsetState()
+    @State private var state = ScrollOffsetState()
     private var edge: Edge
     private var range: ClosedRange<CGFloat>
     private var scrollOffsetID: ScrollOffsetID
@@ -27,6 +28,7 @@ import SwiftUI
 }
 
 
+@available(iOS 17, *)
 public extension ScrollOffset {
     init(_ edge: Edge, in range: ClosedRange<CGFloat> = -CGFloat.infinity...CGFloat.infinity, id: ScrollOffsetID = .automatic) {
         self.edge = edge

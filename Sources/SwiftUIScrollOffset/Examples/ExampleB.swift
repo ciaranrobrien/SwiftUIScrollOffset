@@ -7,6 +7,7 @@
 import SwiftUI
 
 /// Child views can read scroll offsets from outside of the scroll container.
+@available(iOS 17, *)
 private struct ContentView: View {
     var body: some View {
         ScrollView {
@@ -21,6 +22,7 @@ private struct ContentView: View {
 
 
 /// Provide a range to `ScrollOffset` to clamp the scroll offset. This prevents view updates for changes outside of this range.
+@available(iOS 17, *)
 private struct ChildView: View {
     @ScrollOffset(.top, in: -20...0) private var scrollOffset
     

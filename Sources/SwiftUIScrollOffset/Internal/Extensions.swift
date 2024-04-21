@@ -77,22 +77,6 @@ internal extension UIScrollView {
 }
 
 
-internal extension View {
-    @inlinable
-    @ViewBuilder
-    func onAppearAndChange<V>(of value: V, _ action: @escaping (V) -> Void) -> some View
-    where V : Equatable
-    {
-        if #available(iOS 17, *) {
-            self.onChange(of: value, initial: true) { action($1) }
-        } else {
-            self.onAppear { action(value) }
-                .onChange(of: value, perform: action)
-        }
-    }
-}
-
-
 internal extension EnvironmentValues {
     var scrollPublisherID: AnyHashable? {
         get { self[ScrollPublisherIDKey.self] }
