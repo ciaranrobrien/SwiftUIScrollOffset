@@ -1,23 +1,29 @@
 // swift-tools-version: 5.10
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+
+/**
+*  SwiftUIScrollOffset
+*  Copyright (c) Ciaran O'Brien 2024
+*  MIT license, see LICENSE file for details
+*/
 
 import PackageDescription
 
 let package = Package(
     name: "SwiftUIScrollOffset",
+    platforms: [
+        .iOS(.v14),
+        .visionOS(.v1)
+    ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "SwiftUIScrollOffset",
-            targets: ["SwiftUIScrollOffset"]),
+        .library(name: "SwiftUIScrollOffset", targets: ["SwiftUIScrollOffset"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/siteline/SwiftUI-Introspect", from: "1.0.0")
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "SwiftUIScrollOffset"),
-        .testTarget(
-            name: "SwiftUIScrollOffsetTests",
-            dependencies: ["SwiftUIScrollOffset"]),
+            name: "SwiftUIScrollOffset",
+            dependencies: [.product(name: "SwiftUIIntrospect", package: "swiftui-introspect")]
+        )
     ]
 )
