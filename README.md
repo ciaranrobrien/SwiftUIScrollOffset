@@ -10,6 +10,7 @@ struct ContentView: View {
         ScrollView {
             ChildView()
         }
+        .overlay(ChildView())
         .scrollOffsetID(.automatic)
     }
 }
@@ -26,21 +27,6 @@ struct ChildView: View {
 }
 ```
 
-Child views can read scroll offsets from outside of the scroll container.
-```swift
-struct ContentView: View {
-    var body: some View {
-        ScrollView {
-            Rectangle()
-                .fill(.blue.opacity(0.1))
-                .frame(height: 1200)
-        }
-        .overlay(ChildView())
-        .scrollOffsetID(.automatic)
-    }
-}
-```
-
 Provide a range to `ScrollOffset` to clamp the scroll offset. This can prevent unnecessary view updates.
 ```swift
 @ScrollOffset(.top, in: -20...0) private var scrollOffset
@@ -48,6 +34,7 @@ Provide a range to `ScrollOffset` to clamp the scroll offset. This can prevent u
 
 ## Advanced Usage
 Provide a unique identifier to `scrollOffsetID` to read the scroll offset from anywhere in the view hierarchy.
+Use the `projectedValue` of `ScrollOffset` to programmatically scroll to an offset.
 ```swift
 struct ContentView: View {
     var body: some View {
@@ -64,10 +51,8 @@ struct ContentView: View {
         }
     }
 }
-```
 
-/// Use the `projectedValue` of `ScrollOffset` to programmatically scroll to an offset.
-```swift
+
 struct SiblingView: View {
     @ScrollOffset(.top, id: "Foo") private var scrollOffset
     
@@ -82,7 +67,7 @@ struct SiblingView: View {
 
 ```
 
-/// Use `ScrollOffsetProxy` to programmatically scroll to an offset without reading the current value.
+Use `ScrollOffsetProxy` to programmatically scroll to an offset without reading the current value.
 ```swift
 struct ContentView: View {
     @ScrollOffsetProxy(.bottom, id: "Foo") private var scrollOffsetProxy
