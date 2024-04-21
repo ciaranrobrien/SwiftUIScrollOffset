@@ -22,7 +22,7 @@ internal final class ScrollOffsetState {
         self.id = id
         updateValue()
         
-        let publisher = ScrollOffsetStore.shared
+        let publisher = ScrollSubscriptionStore.shared
             .offsetChangedSubject
             .filter { $0 == id }
             .map { _ in () }
@@ -39,7 +39,7 @@ internal final class ScrollOffsetState {
     private var subscriber: AnyCancellable?
     
     private func updateValue() {
-        let edgeOffset: CGFloat = if let id, let edge, let offset = ScrollOffsetStore.shared[offset: id] {
+        let edgeOffset: CGFloat = if let id, let edge, let offset = ScrollSubscriptionStore.shared[offset: id] {
             offset[edge]
         } else {
             .zero

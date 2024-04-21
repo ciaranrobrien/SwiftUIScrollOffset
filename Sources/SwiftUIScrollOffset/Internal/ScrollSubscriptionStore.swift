@@ -5,70 +5,62 @@
 */
 
 import Combine
-import Observation
-import SwiftUI
 import UIKit
 
-@Observable
-@available(iOS 17, *)
-internal final class ScrollOffsetPublisherState: NSObject {
-    private var contentOffsetCancellable: AnyCancellable?
-    private var contentSizeCancellable: AnyCancellable?
-    @ObservationIgnored private var id: AnyHashable?
-    private weak var scrollView: UIScrollView?
+internal final class ScrollSubscriptionStore {
+    static let shared = ScrollSubscriptionStore()
+    private init() {}
     
-    var isPublishing: Bool {
-        contentOffsetCancellable != nil && contentSizeCancellable != nil
+    let offsetChangedSubject = PassthroughSubject<AnyHashable, Never>()
+    
+    subscript(offset id: AnyHashable) -> ScrollOffsetValue? {
+        subscriptions[id]?.offset
     }
-    var scrollContainerID: AnyHashable? {
-        if let scrollView {
-            AnyHashable(ObjectIdentifier(scrollView))
+    
+    subscript(scrollView id: AnyHashable) -> UIScrollView? {
+        guard let subscription = subscriptions[id]
+        else { return nil }
+        
+        if let scrollView = subscription.scrollView {
+            return scrollView
         } else {
-            nil
+            subscriptions.removeValue(forKey: id)
+            return nil
         }
     }
     
     @MainActor
-    func onID(_ newValue: AnyHashable?) {
-        if let id {
-            ScrollOffsetStore.shared[offset: id] = nil
-            ScrollOffsetStore.shared[scrollView: id] = nil
-        }
+    func subscribe(id: AnyHashable, scrollView: UIScrollView) {
+        guard self[scrollView: id] != scrollView
+        else { return }
         
-        id = newValue
-        
-        if let id {
-            ScrollOffsetStore.shared[scrollView: id] = scrollView
-        }
-        
-        update()
-    }
-    
-    @MainActor
-    func subscribe(to scrollView: UIScrollView) {
-        guard !isPublishing else { return }
-        self.scrollView = scrollView
-        
-        if let id {
-            ScrollOffsetStore.shared[scrollView: id] = scrollView
-        }
-        
-        contentOffsetCancellable = scrollView
+        let contentOffsetCancellable = scrollView
             .publisher(for: \.contentOffset, options: [.initial, .new])
             .didChange()
-            .sink(receiveValue: update)
+            .sink { self.updateOffset(for: id) }
         
-        contentSizeCancellable = scrollView
+        let contentSizeCancellable = scrollView
             .publisher(for: \.contentSize, options: [.initial, .new])
             .didChange()
-            .sink(receiveValue: update)
+            .sink { self.updateOffset(for: id) }
         
-        update()
+        subscriptions[id] = ScrollSubscription(
+            contentOffsetCancellable: contentOffsetCancellable,
+            contentSizeCancellable: contentSizeCancellable,
+            scrollView: scrollView
+        )
+        
+        updateOffset(for: id)
     }
     
     @MainActor
-    func update() {
-        guard let scrollView else { return }
+    func unsubscribe(id: AnyHashable) {
+        subscriptions.removeValue(forKey: id)
+    }
+    
+    @MainActor
+    func updateOffset(for id: AnyHashable) {
+        guard let scrollView = self[scrollView: id] else { return }
         
         let top = -scrollView.adjustedDirectionalContentInset.top - scrollView.contentOffset.y
         let bottom = scrollView.contentSize.height
@@ -80,8 +72,7 @@ internal final class ScrollOffsetPublisherState: NSObject {
         - (scrollView.bounds.width - scrollView.adjustedDirectionalContentInset.trailing)
         - scrollView.contentOffset.x
         
-        let id = id ?? AnyHashable(ObjectIdentifier(scrollView))
-        let currentValue = ScrollOffsetStore.shared[offset: id]
+        let currentValue = self[offset: id]
         let displayScale = scrollView.traitCollection.displayScale
         
         let (resolvedTop, didTopChange) = resolve(top, oldValue: currentValue?.top, scale: displayScale)
@@ -90,14 +81,23 @@ internal final class ScrollOffsetPublisherState: NSObject {
         let (resolvedTrailing, didTrailingChange) = resolve(-trailing, oldValue: currentValue?.trailing, scale: displayScale)
         
         if didTopChange || didLeadingChange || didBottomChange || didTrailingChange {
-            ScrollOffsetStore.shared[offset: id] = ScrollOffsetValue(
+            subscriptions[id]?.offset = ScrollOffsetValue(
                 top: resolvedTop,
                 leading: resolvedLeading,
                 bottom: resolvedBottom,
                 trailing: resolvedTrailing
             )
+            offsetChangedSubject.send(id)
         }
     }
+    
+    @MainActor
+    func updateSubscription(from oldID: AnyHashable, to newID: AnyHashable) {
+        subscriptions[newID] = subscriptions[oldID]
+        unsubscribe(id: oldID)
+    }
+    
+    private var subscriptions = [AnyHashable : ScrollSubscription]()
     
     private func resolve(_ first: CGFloat, oldValue second: CGFloat?, scale displayScale: CGFloat) -> (CGFloat, Bool) {
         let firstRounded = Int(round(first * displayScale))
@@ -106,16 +106,5 @@ internal final class ScrollOffsetPublisherState: NSObject {
         let rounded = CGFloat(firstRounded) / displayScale
         let didChange = firstRounded != secondRounded
         return (rounded, didChange)
-    }
-    
-    deinit {
-        if let id {
-            ScrollOffsetStore.shared[offset: id] = nil
-            ScrollOffsetStore.shared[scrollView: id] = nil
-        }
-        if let scrollContainerID {
-            ScrollOffsetStore.shared[offset: scrollContainerID] = nil
-            ScrollOffsetStore.shared[scrollView: scrollContainerID] = nil
-        }
     }
 }

@@ -14,8 +14,8 @@ public extension ScrollOffsetProxy {
         
         public nonmutating func scrollTo(_ offset: Offset, withAnimation: Bool = false) {
             guard let id,
-                  let oldOffset = ScrollOffsetStore.shared[offset: id],
-                  let scrollView = ScrollOffsetStore.shared[scrollView: id]
+                  let oldOffset = ScrollSubscriptionStore.shared[offset: id],
+                  let scrollView = ScrollSubscriptionStore.shared[scrollView: id]
             else { return }
             
             let newOffset = resolveOffset(edges, offset)

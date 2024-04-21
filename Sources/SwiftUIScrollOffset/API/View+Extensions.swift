@@ -8,16 +8,14 @@ import SwiftUI
 
 extension View {
     @MainActor
-    @available(iOS 17, *)
     public func scrollOffsetID(_ id: ScrollOffsetID) -> some View {
-        modifier(ScrollOffsetPublisherModifier(scrollOffsetID: id))
+        modifier(ScrollOffsetSubscriber(scrollOffsetID: id))
     }
     
     @_disfavoredOverload
     @MainActor
-    @available(iOS 17, *)
     public func scrollOffsetID(_ id: some Hashable) -> some View {
-        modifier(ScrollOffsetPublisherModifier(scrollOffsetID: .custom(id)))
+        modifier(ScrollOffsetSubscriber(scrollOffsetID: .custom(id)))
     }
 }
 
