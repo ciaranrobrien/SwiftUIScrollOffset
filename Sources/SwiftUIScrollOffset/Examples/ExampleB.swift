@@ -20,7 +20,7 @@ private struct ContentView: View {
 }
 
 
-/// Provide a range to `ScrollOffset` to clamp the scroll offset. This can prevent unnecessary view updates.
+/// Provide a range to `ScrollOffset` to clamp the scroll offset. This prevents view updates for changes outside of this range.
 private struct ChildView: View {
     @ScrollOffset(.top, in: -20...0) private var scrollOffset
     
