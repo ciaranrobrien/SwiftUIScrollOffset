@@ -20,19 +20,22 @@ internal struct ScrollOffsetSubscriber: ViewModifier {
             .introspect(.scrollView, on: .visionOS(.v1)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
-            .introspect(.scrollView, on: .iOS(.v17)) { scrollView in
+            .introspect(.scrollView, on: .iOS(.v14, .v15, .v16, .v17)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
             .background(
                 GeometryReader { geometry in
                     Color.clear
                         .hidden()
-                        .onChange(of: geometry.frame(in: .global), initial: true) {
+                        .onAppear {
+                            ScrollSubscriptionStore.shared.updateOffset(for: id)
+                        }
+                        .onValueChange(geometry.frame(in: .global)) { _, _ in
                             ScrollSubscriptionStore.shared.updateOffset(for: id)
                         }
                 }
             )
-            .onChange(of: id, initial: true) { oldID, newID in
+            .onValueChange(id) { oldID, newID in
                 ScrollSubscriptionStore.shared.updateSubscription(from: oldID, to: newID)
             }
             .onDisappear {

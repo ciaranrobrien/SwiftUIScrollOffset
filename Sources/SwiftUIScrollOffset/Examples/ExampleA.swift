@@ -7,7 +7,6 @@
 import SwiftUI
 
 /// Use the `scrollOffsetID` modifier to allow any child view to read the first scroll container's offset.
-@available(iOS 17, *)
 private struct ContentView: View {
     var body: some View {
         ScrollView {
@@ -20,7 +19,6 @@ private struct ContentView: View {
 
 /// Use `ScrollOffset` to read the scroll offset from the provided edge.
 /// The scroll offset is calculated relative to any safe area insets.
-@available(iOS 17, *)
 private struct ChildView: View {
     @ScrollOffset(.top) private var scrollOffset
     

@@ -53,9 +53,12 @@ internal final class ScrollSubscriptionStore {
         updateOffset(for: id)
     }
     
-    @MainActor
     func unsubscribe(id: AnyHashable) {
-        subscriptions.removeValue(forKey: id)
+        DispatchQueue.main.async {
+            if let subscription = self.subscriptions[id], subscription.scrollView == nil {
+                self.subscriptions.removeValue(forKey: id)
+            }
+        }
     }
     
     @MainActor
@@ -94,7 +97,7 @@ internal final class ScrollSubscriptionStore {
     @MainActor
     func updateSubscription(from oldID: AnyHashable, to newID: AnyHashable) {
         subscriptions[newID] = subscriptions[oldID]
-        unsubscribe(id: oldID)
+        subscriptions.removeValue(forKey: oldID)
     }
     
     private var subscriptions = [AnyHashable : ScrollSubscription]()

@@ -5,12 +5,9 @@
 */
 
 import Combine
-import Observation
 import SwiftUI
 
-@Observable
-@available(iOS 17, *)
-internal final class ScrollOffsetState: BaseScrollOffsetState {
+internal final class ScrollOffsetStateObject: ObservableObject {
     private(set) var value = CGFloat.zero
     
     func update(edge: Edge, id: AnyHashable?, range: ClosedRange<CGFloat>) {
@@ -48,18 +45,8 @@ internal final class ScrollOffsetState: BaseScrollOffsetState {
         let newValue = min(max(edgeOffset, range.lowerBound), range.upperBound)
         
         if value != newValue {
+            objectWillChange.send()
             value = newValue
-        }
-    }
-}
-
-
-internal class BaseScrollOffsetState {
-    static func build() -> BaseScrollOffsetState? {
-        if #available(iOS 17, visionOS 1, *) {
-            ScrollOffsetState()
-        } else {
-            nil
         }
     }
 }

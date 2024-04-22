@@ -6,16 +6,25 @@
 
 import SwiftUI
 
-@available(iOS 17, *)
 @propertyWrapper public struct ScrollOffset: DynamicProperty {
     @Environment(\.scrollPublisherID) private var scrollPublisherID
-    @State private var state = ScrollOffsetState()
+    @StateObject private var stateObject = ScrollOffsetStateObject()
+    @State private var baseState = BaseScrollOffsetState.build()
     private var edge: Edge
     private var range: ClosedRange<CGFloat>
     private var scrollOffsetID: ScrollOffsetID
     
+    @available(iOS 17, visionOS 1, *)
+    private var state: ScrollOffsetState {
+        baseState as! ScrollOffsetState
+    }
+    
     public var wrappedValue: CGFloat {
-        state.value
+        if #available(iOS 17, visionOS 1, *) {
+            state.value
+        } else {
+            stateObject.value
+        }
     }
     
     public var projectedValue: ScrollOffsetProxy<CGFloat>.Value {
@@ -23,12 +32,15 @@ import SwiftUI
     }
     
     public func update() {
-        state.update(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID, range: range)
+        if #available(iOS 17, visionOS 1, *) {
+            state.update(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID, range: range)
+        } else {
+            stateObject.update(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID, range: range)
+        }
     }
 }
 
 
-@available(iOS 17, *)
 public extension ScrollOffset {
     init(_ edge: Edge, in range: ClosedRange<CGFloat> = -CGFloat.infinity...CGFloat.infinity, id: ScrollOffsetID = .automatic) {
         self.edge = edge
