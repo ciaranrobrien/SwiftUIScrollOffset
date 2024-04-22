@@ -79,9 +79,9 @@ internal final class ScrollSubscriptionStore {
         let displayScale = scrollView.traitCollection.displayScale
         
         let (resolvedTop, didTopChange) = resolve(top, oldValue: currentValue?.top, scale: displayScale)
-        let (resolvedLeading, didLeadingChange) = resolve(-leading, oldValue: currentValue?.leading, scale: displayScale)
-        let (resolvedBottom, didBottomChange) = resolve(-bottom, oldValue: currentValue?.bottom, scale: displayScale)
-        let (resolvedTrailing, didTrailingChange) = resolve(-trailing, oldValue: currentValue?.trailing, scale: displayScale)
+        let (resolvedLeading, didLeadingChange) = resolve(leading, oldValue: currentValue?.leading, scale: displayScale)
+        let (resolvedBottom, didBottomChange) = resolve(bottom, oldValue: currentValue?.bottom, scale: displayScale)
+        let (resolvedTrailing, didTrailingChange) = resolve(trailing, oldValue: currentValue?.trailing, scale: displayScale)
         
         if didTopChange || didLeadingChange || didBottomChange || didTrailingChange {
             subscriptions[id]?.offset = ScrollOffsetValue(
