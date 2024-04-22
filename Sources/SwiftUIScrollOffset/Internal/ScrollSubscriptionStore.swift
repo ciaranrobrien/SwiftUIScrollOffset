@@ -65,15 +65,18 @@ internal final class ScrollSubscriptionStore {
     func updateOffset(for id: AnyHashable) {
         guard let scrollView = self[scrollView: id] else { return }
         
-        let top = -scrollView.adjustedDirectionalContentInset.top - scrollView.contentOffset.y
+        let top = -scrollView.adjustedContentInset.top - scrollView.contentOffset.y
         let bottom = scrollView.contentSize.height
-        - (scrollView.bounds.height - scrollView.adjustedDirectionalContentInset.bottom)
+        - (scrollView.bounds.height - scrollView.adjustedContentInset.bottom)
         - scrollView.contentOffset.y
         
-        let leading = -scrollView.adjustedDirectionalContentInset.leading - scrollView.contentOffset.x
-        let trailing = scrollView.contentSize.width
-        - (scrollView.bounds.width - scrollView.adjustedDirectionalContentInset.trailing)
+        let left = -scrollView.adjustedContentInset.left - scrollView.contentOffset.x
+        let right = scrollView.contentSize.width
+        - (scrollView.bounds.width - scrollView.adjustedContentInset.right)
         - scrollView.contentOffset.x
+        
+        let leading = scrollView.isRightToLeft ? -right : left
+        let trailing = scrollView.isRightToLeft ? -left : right
         
         let currentValue = self[offset: id]
         let displayScale = scrollView.traitCollection.displayScale

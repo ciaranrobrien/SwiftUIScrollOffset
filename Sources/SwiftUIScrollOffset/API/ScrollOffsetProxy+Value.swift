@@ -37,15 +37,15 @@ public extension ScrollOffsetProxy {
                 contentOffset.y -= newOffset.bottom - oldOffset.bottom
             }
             
-            let top = -scrollView.adjustedDirectionalContentInset.top
+            let top = -scrollView.adjustedContentInset.top
             let bottom = scrollView.contentSize.height
-            - (scrollView.bounds.height - scrollView.adjustedDirectionalContentInset.bottom)
+            - (scrollView.bounds.height - scrollView.adjustedContentInset.bottom)
             
-            let leading = -scrollView.adjustedDirectionalContentInset.leading
-            let trailing = scrollView.contentSize.width
-            - (scrollView.bounds.width - scrollView.adjustedDirectionalContentInset.trailing)
+            let left = -scrollView.adjustedContentInset.left
+            let right = scrollView.contentSize.width
+            - (scrollView.bounds.width - scrollView.adjustedContentInset.right)
             
-            contentOffset.x = min(max(contentOffset.x, leading), trailing)
+            contentOffset.x = min(max(contentOffset.x, left), right)
             contentOffset.y = min(max(contentOffset.y, top), bottom)
             
             scrollView.setContentOffset(contentOffset, animated: withAnimation)

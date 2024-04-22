@@ -62,15 +62,6 @@ internal extension ScrollOffsetProxy.Value {
 
 
 internal extension UIScrollView {
-    var adjustedDirectionalContentInset: EdgeInsets {
-        EdgeInsets(
-            top: adjustedContentInset.top,
-            leading: isRightToLeft ? adjustedContentInset.right : adjustedContentInset.left,
-            bottom: adjustedContentInset.bottom,
-            trailing: isRightToLeft ? adjustedContentInset.left : adjustedContentInset.right
-        )
-    }
-    
     var isRightToLeft: Bool {
         effectiveUserInterfaceLayoutDirection == .rightToLeft
     }
