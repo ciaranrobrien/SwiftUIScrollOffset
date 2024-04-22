@@ -102,6 +102,10 @@ struct ContentView: View {
 * Install with [Swift Package Manager](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app).
 * Import `SwiftUIScrollOffset` to start using.
 
+## Dependencies
+
+* [SwiftUI Introspect](https://github.com/siteline/swiftui-introspect)
+
 ## Contact
 
 [@ciaranrobrien](https://twitter.com/ciaranrobrien) on Twitter.
