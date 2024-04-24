@@ -47,24 +47,38 @@ private struct ScrollOffsetIntrospectionModifier: ViewModifier {
     var id: AnyHashable
     
     #if canImport(UIKit)
+    #if os(tvOS)
+    func body(content: Content) -> some View {
+        content
+            .introspect(.scrollView, on: .tvOS(.v14, .v15, .v16, .v17)) { scrollView in
+                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
+            }
+    }
+    #elseif os(visionOS)
+    func body(content: Content) -> some View {
+        content
+            .introspect(.scrollView, on: .visionOS(.v1)) { scrollView in
+                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
+            }
+    }
+    #else
     func body(content: Content) -> some View {
         content
             .introspect(.scrollView, on: .iOS(.v14, .v15, .v16, .v17)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
-            .introspect(.scrollView, on: .tvOS(.v14, .v15, .v16, .v17)) { scrollView in
-                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
-            }
-            .introspect(.scrollView, on: .visionOS(.v1)) { scrollView in
-                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
-            }
     }
+    #endif
     #elseif canImport(AppKit)
     func body(content: Content) -> some View {
         content
             .introspect(.scrollView, on: .macOS(.v11, .v12, .v13, .v14)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
+    }
+    #else
+    func body(content: Content) -> some View {
+        content
     }
     #endif
 }

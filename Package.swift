@@ -12,6 +12,7 @@ let package = Package(
     name: "SwiftUIScrollOffset",
     platforms: [
         .iOS(.v14),
+        .macCatalyst(.v14),
         .macOS(.v11),
         .tvOS(.v14),
         .visionOS(.v1)
