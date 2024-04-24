@@ -30,7 +30,7 @@ internal extension UIScrollView {
     
     func subscribeToContentOffset(_ sink: @escaping () -> Void) -> AnyCancellable {
         self
-            .publisher(for: \.contentSize, options: [.initial, .new])
+            .publisher(for: \.contentOffset, options: [.initial, .new])
             .didChange()
             .sink(receiveValue: sink)
     }
