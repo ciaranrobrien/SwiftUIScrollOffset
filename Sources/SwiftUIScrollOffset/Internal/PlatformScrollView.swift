@@ -35,7 +35,7 @@ internal extension UIScrollView {
             .sink(receiveValue: sink)
     }
     
-    func subscribeToContentSize(_ sink: @escaping () -> Void) -> AnyCancellable? {
+    func subscribeToContentSize(_ sink: @escaping () -> Void) -> AnyCancellable {
         self
             .publisher(for: \.contentSize, options: [.initial, .new])
             .didChange()
@@ -84,7 +84,7 @@ internal extension NSScrollView {
     }
     
     func subscribeToContentOffset(_ sink: @escaping () -> Void) -> AnyCancellable {
-        contentView.postsFrameChangedNotifications = true
+        contentView.postsBoundsChangedNotifications = true
         
         return NotificationCenter.default
             .publisher(for: NSView.boundsDidChangeNotification)
@@ -98,8 +98,19 @@ internal extension NSScrollView {
             .sink { _ in sink() }
     }
     
-    func subscribeToContentSize(_ sink: @escaping () -> Void) -> AnyCancellable? {
-        nil
+    func subscribeToContentSize(_ sink: @escaping () -> Void) -> AnyCancellable {
+        contentView.postsFrameChangedNotifications = true
+        
+        return NotificationCenter.default
+            .publisher(for: NSView.frameDidChangeNotification)
+            .filter { [weak self] x in
+                guard let self,
+                      let view = x.object as? NSView
+                else { return false }
+                
+                return view == self.contentView
+            }
+            .sink { _ in sink() }
     }
 }
 
