@@ -39,7 +39,7 @@ internal extension UIScrollView {
         self
             .publisher(for: \.contentSize, options: [.initial, .new])
             .didChange()
-            .sink { self.updateOffset(for: id) }
+            .sink(receiveValue: sink)
     }
 }
 
