@@ -28,7 +28,7 @@ import SwiftUI
     }
     
     public var projectedValue: ScrollOffsetProxy<CGFloat>.Value {
-        ScrollOffsetProxy.Value(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID)
+        .init(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID)
     }
     
     public func update() {
@@ -76,5 +76,16 @@ public extension ScrollOffset {
         self.edge = edge
         self.range = -CGFloat.infinity...range.upperBound
         self.scrollOffsetID = .custom(id)
+    }
+}
+
+
+public extension ScrollOffset {
+    static func proxy(_ edge: Edge, id: some Hashable) -> ScrollOffsetProxy<CGFloat>.Value {
+        .init(edge: edge, id: id)
+    }
+    
+    static func proxy(_ corner: Corner, id: some Hashable) -> ScrollOffsetProxy<CGPoint>.Value {
+        .init(corner: corner, id: id)
     }
 }

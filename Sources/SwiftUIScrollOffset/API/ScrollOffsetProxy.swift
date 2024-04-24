@@ -17,8 +17,8 @@ import SwiftUI
 
 
 public extension ScrollOffsetProxy where Offset == CGFloat {
-    init(_ edge: Edge) {
-        self.resolveProxy = { id in .init(edge: edge, id: id) }
+    init(_ edge: Edge, id: ScrollOffsetID = .automatic) {
+        self.resolveProxy = { viewID in .init(edge: edge, id: id.id ?? viewID) }
     }
     
     init(_ edge: Edge, id: some Hashable) {
@@ -28,8 +28,8 @@ public extension ScrollOffsetProxy where Offset == CGFloat {
 
 
 public extension ScrollOffsetProxy where Offset == CGPoint {
-    init(_ corner: Corner) {
-        self.resolveProxy = { id in .init(corner: corner, id: id) }
+    init(_ corner: Corner, id: ScrollOffsetID = .automatic) {
+        self.resolveProxy = { viewID in .init(corner: corner, id: id.id ?? viewID) }
     }
     
     init(_ corner: Corner, id: some Hashable) {

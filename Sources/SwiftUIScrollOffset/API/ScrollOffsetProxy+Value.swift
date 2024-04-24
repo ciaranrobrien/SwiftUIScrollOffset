@@ -8,9 +8,19 @@ import SwiftUI
 
 public extension ScrollOffsetProxy {
     struct Value {
-        internal var edges: Edge.Set
-        internal var id: AnyHashable?
-        internal var resolveOffset: (Edge.Set, Offset) -> ScrollOffsetValue
+        internal let edges: Edge.Set
+        internal let id: AnyHashable?
+        internal let resolveOffset: (Edge.Set, ScrollOffsetValue?) -> Offset
+        internal let resolveScrollOffsetValue: (Edge.Set, Offset) -> ScrollOffsetValue
+        
+        public var offset: Offset {
+            let offset: ScrollOffsetValue? = if let id {
+                ScrollSubscriptionStore.shared[offset: id]
+            } else {
+                nil
+            }
+            return resolveOffset(edges, offset)
+        }
         
         @MainActor
         public nonmutating func scrollTo(_ offset: Offset, withAnimation: Bool = false) {
@@ -19,7 +29,7 @@ public extension ScrollOffsetProxy {
                   let scrollView = ScrollSubscriptionStore.shared[scrollView: id]
             else { return }
             
-            let newOffset = resolveOffset(edges, offset)
+            let newOffset = resolveScrollOffsetValue(edges, offset)
             var contentOffset = scrollView.contentOffset
             
             if !newOffset.leading.isNaN {
