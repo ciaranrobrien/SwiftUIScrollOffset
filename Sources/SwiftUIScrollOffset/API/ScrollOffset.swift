@@ -14,13 +14,13 @@ import SwiftUI
     private var range: ClosedRange<CGFloat>
     private var scrollOffsetID: ScrollOffsetID
     
-    @available(iOS 17, visionOS 1, *)
+    @available(iOS 17, macOS 14, tvOS 17, visionOS 1, *)
     private var state: ScrollOffsetState {
         baseState as! ScrollOffsetState
     }
     
     public var wrappedValue: CGFloat {
-        if #available(iOS 17, visionOS 1, *) {
+        if #available(iOS 17, macOS 14, tvOS 17, visionOS 1, *) {
             state.value
         } else {
             stateObject.value
@@ -32,7 +32,7 @@ import SwiftUI
     }
     
     public func update() {
-        if #available(iOS 17, visionOS 1, *) {
+        if #available(iOS 17, macOS 14, tvOS 17, visionOS 1, *) {
             state.update(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID, range: range)
         } else {
             stateObject.update(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID, range: range)

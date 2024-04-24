@@ -9,7 +9,7 @@ import Observation
 import SwiftUI
 
 @Observable
-@available(iOS 17, *)
+@available(iOS 17, macOS 14, tvOS 17, visionOS 1, *)
 internal final class ScrollOffsetState: BaseScrollOffsetState {
     private(set) var value = CGFloat.zero
     
@@ -56,7 +56,7 @@ internal final class ScrollOffsetState: BaseScrollOffsetState {
 
 internal class BaseScrollOffsetState {
     static func build() -> BaseScrollOffsetState? {
-        if #available(iOS 17, visionOS 1, *) {
+        if #available(iOS 17, macOS 14, tvOS 17, visionOS 1, *) {
             ScrollOffsetState()
         } else {
             nil

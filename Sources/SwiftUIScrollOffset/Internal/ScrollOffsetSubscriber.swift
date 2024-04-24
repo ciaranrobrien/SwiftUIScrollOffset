@@ -6,7 +6,6 @@
 
 import SwiftUI
 import SwiftUIIntrospect
-import UIKit
 
 @MainActor
 internal struct ScrollOffsetSubscriber: ViewModifier {
@@ -17,12 +16,7 @@ internal struct ScrollOffsetSubscriber: ViewModifier {
     func body(content: Content) -> some View {
         content
             .environment(\.scrollPublisherID, id)
-            .introspect(.scrollView, on: .visionOS(.v1)) { scrollView in
-                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
-            }
-            .introspect(.scrollView, on: .iOS(.v14, .v15, .v16, .v17)) { scrollView in
-                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
-            }
+            .modifier(ScrollOffsetIntrospectionModifier(id: id))
             .background(
                 GeometryReader { geometry in
                     Color.clear
@@ -46,4 +40,31 @@ internal struct ScrollOffsetSubscriber: ViewModifier {
     private var id: AnyHashable {
         scrollOffsetID.id ?? AnyHashable(automaticID)
     }
+}
+
+
+private struct ScrollOffsetIntrospectionModifier: ViewModifier {
+    var id: AnyHashable
+    
+    #if canImport(UIKit)
+    func body(content: Content) -> some View {
+        content
+            .introspect(.scrollView, on: .iOS(.v14, .v15, .v16, .v17)) { scrollView in
+                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
+            }
+            .introspect(.scrollView, on: .tvOS(.v14, .v15, .v16, .v17)) { scrollView in
+                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
+            }
+            .introspect(.scrollView, on: .visionOS(.v1)) { scrollView in
+                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
+            }
+    }
+    #elseif canImport(AppKit)
+    func body(content: Content) -> some View {
+        content
+            .introspect(.scrollView, on: .macOS(.v11, .v12, .v13, .v14)) { scrollView in
+                ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
+            }
+    }
+    #endif
 }

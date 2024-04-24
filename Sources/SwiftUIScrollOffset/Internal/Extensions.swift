@@ -110,13 +110,6 @@ internal extension ScrollOffsetValue {
 }
 
 
-internal extension UIScrollView {
-    var isRightToLeft: Bool {
-        effectiveUserInterfaceLayoutDirection == .rightToLeft
-    }
-}
-
-
 internal extension EnvironmentValues {
     var scrollPublisherID: AnyHashable? {
         get { self[ScrollPublisherIDKey.self] }

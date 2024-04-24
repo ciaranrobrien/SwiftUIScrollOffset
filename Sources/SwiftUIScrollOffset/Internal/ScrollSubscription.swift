@@ -5,15 +5,14 @@
 */
 
 import Combine
-import UIKit
 
 internal final class ScrollSubscription {
     let contentOffsetCancellable: AnyCancellable
-    let contentSizeCancellable: AnyCancellable
+    let contentSizeCancellable: AnyCancellable?
     var offset: ScrollOffsetValue
-    weak var scrollView: UIScrollView?
+    weak var scrollView: PlatformScrollView?
     
-    init(contentOffsetCancellable: AnyCancellable, contentSizeCancellable: AnyCancellable, scrollView: UIScrollView) {
+    init(contentOffsetCancellable: AnyCancellable, contentSizeCancellable: AnyCancellable?, scrollView: PlatformScrollView) {
         self.contentOffsetCancellable = contentOffsetCancellable
         self.contentSizeCancellable = contentSizeCancellable
         self.offset = ScrollOffsetValue(top: .zero, leading: .zero, bottom: .zero, trailing: .zero)

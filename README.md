@@ -94,7 +94,7 @@ struct ContentView: View {
 
 ## Requirements
 
-* iOS 14.0+, visionOS 1.0+
+* iOS 14.0+, macOS 11.0+, tvOS 14.0+, visionOS 1.0+
 * Xcode 15.0+
 
 ## Installation

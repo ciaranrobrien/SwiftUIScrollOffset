@@ -5,7 +5,7 @@
 */
 
 import Combine
-import UIKit
+import Foundation
 
 internal final class ScrollSubscriptionStore {
     static let shared = ScrollSubscriptionStore()
@@ -17,7 +17,7 @@ internal final class ScrollSubscriptionStore {
         subscriptions[id]?.offset
     }
     
-    subscript(scrollView id: AnyHashable) -> UIScrollView? {
+    subscript(scrollView id: AnyHashable) -> PlatformScrollView? {
         guard let subscription = subscriptions[id]
         else { return nil }
         
@@ -30,19 +30,17 @@ internal final class ScrollSubscriptionStore {
     }
     
     @MainActor
-    func subscribe(id: AnyHashable, scrollView: UIScrollView) {
+    func subscribe(id: AnyHashable, scrollView: PlatformScrollView) {
         guard self[scrollView: id] != scrollView
         else { return }
         
-        let contentOffsetCancellable = scrollView
-            .publisher(for: \.contentOffset, options: [.initial, .new])
-            .didChange()
-            .sink { self.updateOffset(for: id) }
+        let contentOffsetCancellable = scrollView.subscribeToContentOffset {
+            self.updateOffset(for: id)
+        }
         
-        let contentSizeCancellable = scrollView
-            .publisher(for: \.contentSize, options: [.initial, .new])
-            .didChange()
-            .sink { self.updateOffset(for: id) }
+        let contentSizeCancellable = scrollView.subscribeToContentSize {
+            self.updateOffset(for: id)
+        }
         
         subscriptions[id] = ScrollSubscription(
             contentOffsetCancellable: contentOffsetCancellable,
@@ -65,21 +63,21 @@ internal final class ScrollSubscriptionStore {
     func updateOffset(for id: AnyHashable) {
         guard let scrollView = self[scrollView: id] else { return }
         
-        let top = -scrollView.adjustedContentInset.top - scrollView.contentOffset.y
-        let bottom = scrollView.contentSize.height
+        let top = -scrollView.adjustedContentInset.top - scrollView.scrollContentOffset.y
+        let bottom = scrollView.scrollContentSize.height
         - (scrollView.bounds.height - scrollView.adjustedContentInset.bottom)
-        - scrollView.contentOffset.y
+        - scrollView.scrollContentOffset.y
         
-        let left = -scrollView.adjustedContentInset.left - scrollView.contentOffset.x
-        let right = scrollView.contentSize.width
+        let left = -scrollView.adjustedContentInset.left - scrollView.scrollContentOffset.x
+        let right = scrollView.scrollContentSize.width
         - (scrollView.bounds.width - scrollView.adjustedContentInset.right)
-        - scrollView.contentOffset.x
+        - scrollView.scrollContentOffset.x
         
         let leading = scrollView.isRightToLeft ? -right : left
         let trailing = scrollView.isRightToLeft ? -left : right
         
         let currentValue = self[offset: id]
-        let displayScale = scrollView.traitCollection.displayScale
+        let displayScale = scrollView.displayScale
         
         let (resolvedTop, didTopChange) = resolve(top, oldValue: currentValue?.top, scale: displayScale)
         let (resolvedLeading, didLeadingChange) = resolve(leading, oldValue: currentValue?.leading, scale: displayScale)

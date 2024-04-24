@@ -30,7 +30,7 @@ public extension ScrollOffsetProxy {
             else { return }
             
             let newOffset = resolveScrollOffsetValue(edges, offset)
-            var contentOffset = scrollView.contentOffset
+            var contentOffset = scrollView.scrollContentOffset
             
             if !newOffset.leading.isNaN {
                 let change = newOffset.leading - oldOffset.leading
@@ -48,11 +48,11 @@ public extension ScrollOffsetProxy {
             }
             
             let top = -scrollView.adjustedContentInset.top
-            let bottom = scrollView.contentSize.height
+            let bottom = scrollView.scrollContentSize.height
             - (scrollView.bounds.height - scrollView.adjustedContentInset.bottom)
             
             let left = -scrollView.adjustedContentInset.left
-            let right = scrollView.contentSize.width
+            let right = scrollView.scrollContentSize.width
             - (scrollView.bounds.width - scrollView.adjustedContentInset.right)
             
             contentOffset.x = min(max(contentOffset.x, left), right)
