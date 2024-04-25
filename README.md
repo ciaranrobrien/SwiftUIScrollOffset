@@ -92,6 +92,8 @@ struct ContentView: View {
 }
 ```
 
+See [Examples](/Sources/SwiftUIScrollOffset/Examples/) for more.
+
 ## Requirements
 
 * iOS 14.0+, macOS 11.0+, tvOS 14.0+, visionOS 1.0+
