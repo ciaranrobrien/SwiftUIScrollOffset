@@ -70,16 +70,18 @@ internal extension NSScrollView {
     }
     
     func setContentOffset(_ contentOffset: CGPoint, animated: Bool) {
-        let oldOffset = scrollContentOffset
+        guard contentOffset != scrollContentOffset
+        else { return }
         
-        NSAnimationContext.beginGrouping()
-        NSAnimationContext.current.duration = 0.3
-        contentView.animator().setBoundsOrigin(contentOffset)
-        reflectScrolledClipView(contentView)
-        NSAnimationContext.endGrouping()
-        
-        if oldOffset != contentOffset {
+        if animated {
+            NSAnimationContext.beginGrouping()
+            NSAnimationContext.current.duration = 0.3
+            contentView.animator().setBoundsOrigin(contentOffset)
+            reflectScrolledClipView(contentView)
+            NSAnimationContext.endGrouping()
             flashScrollers()
+        } else {
+            contentView.setBoundsOrigin(contentOffset)
         }
     }
     
