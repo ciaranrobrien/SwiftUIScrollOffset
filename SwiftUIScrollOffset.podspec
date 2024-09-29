@@ -13,5 +13,6 @@ s.requires_arc = true
 
 # If more than one source file: https://guides.cocoapods.org/syntax/podspec.html#source_files
 s.source_files = 'Sources/SwiftUIScrollOffset/**/*.{h,m,swift}'
+s.dependency 'SwiftUIIntrospect'
 
 end
