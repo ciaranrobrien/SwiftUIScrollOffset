@@ -1,5 +1,4 @@
 # SwiftUI Scroll Offset
-
 Read and update the scroll offset of a SwiftUI `List` or `ScrollView` from anywhere in the view hierarchy.
 
 ## Get Started
@@ -95,17 +94,14 @@ struct ContentView: View {
 See [Examples](/Sources/SwiftUIScrollOffset/Examples/) for more.
 
 ## Requirements
-
 * iOS 14.0+, macOS 11.0+, tvOS 14.0+, visionOS 1.0+
 * Xcode 26.0+
 
 ## Installation
-
 * Install with [Swift Package Manager](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app) or with [CocoaPods](https://guides.cocoapods.org/using/getting-started.html).
 * Import `SwiftUIScrollOffset` to start using.
 
 ### CocoaPods
-
 To install with CocoaPods, add the dependency to your Podfile.
 
 ```ruby
@@ -113,5 +109,4 @@ pod 'SwiftUIScrollOffset'
 ```
 
 ## Dependencies
-
 * [SwiftUI Introspect](https://github.com/siteline/swiftui-introspect)

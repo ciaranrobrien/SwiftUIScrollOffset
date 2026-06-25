@@ -1,6 +1,6 @@
 /**
 *  SwiftUIScrollOffset
-*  Copyright (c) Ciaran O'Brien 2025
+*  Copyright (c) Ciaran O'Brien 2026
 *  MIT license, see LICENSE file for details
 */
 

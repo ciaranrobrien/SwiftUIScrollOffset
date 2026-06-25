@@ -2,7 +2,7 @@
 
 /**
 *  SwiftUIScrollOffset
-*  Copyright (c) Ciaran O'Brien 2025
+*  Copyright (c) Ciaran O'Brien 2026
 *  MIT license, see LICENSE file for details
 */
 
@@ -21,7 +21,7 @@ let package = Package(
         .library(name: "SwiftUIScrollOffset", targets: ["SwiftUIScrollOffset"])
     ],
     dependencies: [
-        .package(url: "https://github.com/siteline/swiftui-introspect", from: "26.0.0")
+        .package(url: "https://github.com/siteline/swiftui-introspect", from: "26.0.1")
     ],
     targets: [
         .target(

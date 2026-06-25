@@ -1,11 +1,11 @@
 /**
 *  SwiftUIScrollOffset
-*  Copyright (c) Ciaran O'Brien 2025
+*  Copyright (c) Ciaran O'Brien 2026
 *  MIT license, see LICENSE file for details
 */
 
 import SwiftUI
-import SwiftUIIntrospect
+@_spi(Advanced) import SwiftUIIntrospect
 
 internal struct ScrollOffsetSubscriber: ViewModifier {
     @State private var automaticID = UUID()
@@ -49,21 +49,21 @@ private struct ScrollOffsetIntrospectionModifier: ViewModifier {
     #if os(tvOS)
     func body(content: Content) -> some View {
         content
-            .introspect(.scrollView, on: .tvOS(.v14, .v15, .v16, .v17, .v18, .v26)) { scrollView in
+            .introspect(.scrollView, on: .tvOS(.v14...)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
     }
     #elseif os(visionOS)
     func body(content: Content) -> some View {
         content
-            .introspect(.scrollView, on: .visionOS(.v1, .v2, .v26)) { scrollView in
+            .introspect(.scrollView, on: .visionOS(.v1...)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
     }
     #else
     func body(content: Content) -> some View {
         content
-            .introspect(.scrollView, on: .iOS(.v14, .v15, .v16, .v17, .v18, .v26)) { scrollView in
+            .introspect(.scrollView, on: .iOS(.v14...)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
     }
@@ -71,7 +71,7 @@ private struct ScrollOffsetIntrospectionModifier: ViewModifier {
     #elseif canImport(AppKit)
     func body(content: Content) -> some View {
         content
-            .introspect(.scrollView, on: .macOS(.v11, .v12, .v13, .v14, .v15, .v26)) { scrollView in
+            .introspect(.scrollView, on: .macOS(.v11...)) { scrollView in
                 ScrollSubscriptionStore.shared.subscribe(id: id, scrollView: scrollView)
             }
     }
