@@ -14,6 +14,7 @@ import SwiftUI
     private var edge: Edge
     private var range: ClosedRange<CGFloat>
     private var scrollOffsetID: ScrollOffsetID
+    private var transaction: Transaction
     
     @available(iOS 17, macOS 14, tvOS 17, visionOS 1, *)
     private var state: ScrollOffsetState {
@@ -34,49 +35,95 @@ import SwiftUI
     
     public func update() {
         if #available(iOS 17, macOS 14, tvOS 17, visionOS 1, *) {
-            state.update(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID, range: range)
+            state.update(
+                edge: edge,
+                id: scrollOffsetID.id ?? scrollPublisherID,
+                range: range,
+                transaction: transaction
+            )
         } else {
-            stateObject.update(edge: edge, id: scrollOffsetID.id ?? scrollPublisherID, range: range)
+            stateObject.update(
+                edge: edge,
+                id: scrollOffsetID.id ?? scrollPublisherID,
+                range: range,
+                transaction: transaction
+            )
         }
     }
 }
 
 
 public extension ScrollOffset {
-    init(_ edge: Edge, in range: ClosedRange<CGFloat> = -CGFloat.infinity...CGFloat.infinity, id: ScrollOffsetID = .automatic) {
+    init(
+        _ edge: Edge,
+        in range: ClosedRange<CGFloat> = -CGFloat.infinity...CGFloat.infinity,
+        id: ScrollOffsetID = .automatic,
+        transaction: Transaction = Transaction()
+    ) {
         self.edge = edge
         self.range = range
         self.scrollOffsetID = id
+        self.transaction = transaction
     }
     
-    init(_ edge: Edge, in range: PartialRangeFrom<CGFloat>, id: ScrollOffsetID = .automatic) {
+    init(
+        _ edge: Edge,
+        in range: PartialRangeFrom<CGFloat>,
+        id: ScrollOffsetID = .automatic,
+        transaction: Transaction = Transaction()
+    ) {
         self.edge = edge
         self.range = range.lowerBound...CGFloat.infinity
         self.scrollOffsetID = id
+        self.transaction = transaction
     }
     
-    init(_ edge: Edge, in range: PartialRangeThrough<CGFloat>, id: ScrollOffsetID = .automatic) {
+    init(
+        _ edge: Edge,
+        in range: PartialRangeThrough<CGFloat>,
+        id: ScrollOffsetID = .automatic,
+        transaction: Transaction = Transaction()
+    ) {
         self.edge = edge
         self.range = -CGFloat.infinity...range.upperBound
         self.scrollOffsetID = id
+        self.transaction = transaction
     }
     
-    init(_ edge: Edge, in range: ClosedRange<CGFloat> = -CGFloat.infinity...CGFloat.infinity, id: some Hashable) {
+    init(
+        _ edge: Edge,
+        in range: ClosedRange<CGFloat> = -CGFloat.infinity...CGFloat.infinity,
+        id: some Hashable,
+        transaction: Transaction = Transaction()
+    ) {
         self.edge = edge
         self.range = range
         self.scrollOffsetID = .custom(id)
+        self.transaction = transaction
     }
     
-    init(_ edge: Edge, in range: PartialRangeFrom<CGFloat>, id: some Hashable) {
+    init(
+        _ edge: Edge,
+        in range: PartialRangeFrom<CGFloat>,
+        id: some Hashable,
+        transaction: Transaction = Transaction()
+    ) {
         self.edge = edge
         self.range = range.lowerBound...CGFloat.infinity
         self.scrollOffsetID = .custom(id)
+        self.transaction = transaction
     }
     
-    init(_ edge: Edge, in range: PartialRangeThrough<CGFloat>, id: some Hashable) {
+    init(
+        _ edge: Edge,
+        in range: PartialRangeThrough<CGFloat>,
+        id: some Hashable,
+        transaction: Transaction = Transaction()
+    ) {
         self.edge = edge
         self.range = -CGFloat.infinity...range.upperBound
         self.scrollOffsetID = .custom(id)
+        self.transaction = transaction
     }
 }
 

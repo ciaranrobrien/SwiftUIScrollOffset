@@ -11,7 +11,7 @@ import SwiftUI
 internal final class ScrollOffsetStateObject: ObservableObject {
     private(set) var value = CGFloat.zero
     
-    func update(edge: Edge, id: AnyHashable?, range: ClosedRange<CGFloat>) {
+    func update(edge: Edge, id: AnyHashable?, range: ClosedRange<CGFloat>, transaction: Transaction) {
         self.edge = edge
         self.range = range
         
@@ -27,7 +27,11 @@ internal final class ScrollOffsetStateObject: ObservableObject {
             .eraseToAnyPublisher()
         
         subscriber = publisher.sink { [weak self] _ in
-            self?.updateValue()
+            if let self {
+                withTransaction(transaction) {
+                    self.updateValue()
+                }
+            }
         }
     }
     

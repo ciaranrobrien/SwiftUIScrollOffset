@@ -21,7 +21,7 @@ let package = Package(
         .library(name: "SwiftUIScrollOffset", targets: ["SwiftUIScrollOffset"])
     ],
     dependencies: [
-        .package(url: "https://github.com/siteline/swiftui-introspect", from: "26.0.1")
+        .package(url: "https://github.com/siteline/swiftui-introspect", from: "27.0.0")
     ],
     targets: [
         .target(

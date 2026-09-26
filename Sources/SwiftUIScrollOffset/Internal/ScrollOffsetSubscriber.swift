@@ -5,7 +5,7 @@
 */
 
 import SwiftUI
-@_spi(Advanced) import SwiftUIIntrospect
+import SwiftUIIntrospect
 
 internal struct ScrollOffsetSubscriber: ViewModifier {
     @State private var automaticID = UUID()

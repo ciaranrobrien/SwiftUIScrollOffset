@@ -48,12 +48,16 @@ public extension ScrollOffsetProxy {
             }
             
             let top = -scrollView.adjustedContentInset.top
-            let bottom = scrollView.scrollContentSize.height
-            - (scrollView.bounds.height - scrollView.adjustedContentInset.bottom)
+            let bottom = max(
+                top,
+                scrollView.scrollContentSize.height - (scrollView.bounds.height - scrollView.adjustedContentInset.bottom)
+            )
             
             let left = -scrollView.adjustedContentInset.left
-            let right = scrollView.scrollContentSize.width
-            - (scrollView.bounds.width - scrollView.adjustedContentInset.right)
+            let right = max(
+                left,
+                scrollView.scrollContentSize.width - (scrollView.bounds.width - scrollView.adjustedContentInset.right)
+            )
             
             contentOffset.x = min(max(contentOffset.x, left), right)
             contentOffset.y = min(max(contentOffset.y, top), bottom)
